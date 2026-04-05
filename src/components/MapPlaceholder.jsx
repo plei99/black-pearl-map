@@ -62,7 +62,7 @@ export default function RestaurantMap({ restaurants }) {
   return (
     <div className="rounded-xl overflow-hidden border border-gray-200 h-[350px]">
       <APIProvider apiKey={API_KEY}>
-        <Map defaultCenter={center} defaultZoom={12} mapId="black-pearl-map">
+        <Map defaultCenter={center} defaultZoom={12} mapId="ef6f1470cfa22b05e28e5c62">
           <RestaurantMarkers restaurants={restaurants} />
         </Map>
       </APIProvider>
