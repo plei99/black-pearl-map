@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Ultraviolet by Paul Pairet",
+    "cuisine": "French Fusion",
+    "cost_per_person": 6000,
+    "location": { "lat": 31.2304, "lng": 121.4737 },
+    "city": "上海",
+    "diamonds": 3
+  },
+  {
+    "id": 2,
+    "name": "8½ Otto e Mezzo BOMBANA",
+    "cuisine": "Italian",
+    "cost_per_person": 2000,
+    "location": { "lat": 31.2389, "lng": 121.4744 },
+    "city": "上海",
+    "diamonds": 2
+  },
+  {
+    "id": 3,
+    "name": "Da Dong Roast Duck",
+    "cuisine": "Beijing / Roast Duck",
+    "cost_per_person": 400,
+    "location": { "lat": 39.9292, "lng": 116.4610 },
+    "city": "北京",
+    "diamonds": 2
+  },
+  {
+    "id": 4,
+    "name": "King's Joy 京兆尹",
+    "cuisine": "Vegetarian",
+    "cost_per_person": 800,
+    "location": { "lat": 39.9403, "lng": 116.4074 },
+    "city": "北京",
+    "diamonds": 3
+  },
+  {
+    "id": 5,
+    "name": "Fu He Hui 福和慧",
+    "cuisine": "Vegetarian",
+    "cost_per_person": 900,
+    "location": { "lat": 31.2152, "lng": 121.4347 },
+    "city": "上海",
+    "diamonds": 2
+  },
+  {
+    "id": 6,
+    "name": "Taian Table",
+    "cuisine": "Contemporary European",
+    "cost_per_person": 1500,
+    "location": { "lat": 31.2120, "lng": 121.4365 },
+    "city": "上海",
+    "diamonds": 1
+  },
+  {
+    "id": 7,
+    "name": "Xin Rong Ji 新荣记",
+    "cuisine": "Taizhou / Zhejiang",
+    "cost_per_person": 600,
+    "location": { "lat": 39.9170, "lng": 116.4600 },
+    "city": "北京",
+    "diamonds": 1
+  },
+  {
+    "id": 8,
+    "name": "Canton 8 喜粤8号",
+    "cuisine": "Cantonese",
+    "cost_per_person": 350,
+    "location": { "lat": 31.2345, "lng": 121.4690 },
+    "city": "上海",
+    "diamonds": 1
+  }
+]
