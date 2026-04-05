@@ -5,7 +5,7 @@ A web application to aid restaurant selection in Chinese cities by pulling data 
 ## Tech Stack
 - **Frontend**: React + Vite (Pure Web)
 - **Styling**: Tailwind CSS v4
-- **Maps**: Amap (Gaode / 高德地图) Web JS API
+- **Maps**: Google Maps (via `@vis.gl/react-google-maps`)
 - **Data**: Static JSON dataset (to bypass Dianping anti-scraping limits)
 - **Hosting**: Netlify (with China mainland integration)
 
@@ -16,15 +16,16 @@ npm install
 npm run dev
 ```
 
-## Amap Integration
+## Google Maps Setup
 
-To enable the map, get an API key from the Gaode Open Platform and uncomment the script tag in `index.html`:
+1. Get an API key from the [Google Cloud Console](https://console.cloud.google.com/) with the **Maps JavaScript API** enabled.
+2. Create a `.env.local` file:
+   ```
+   VITE_GOOGLE_MAPS_API_KEY=your_key_here
+   ```
+3. Restart the dev server — the map will render with restaurant markers.
 
-```html
-<script src="https://webapi.amap.com/maps?v=2.0&key=YOUR_AMAP_KEY"></script>
-```
-
-Then replace `src/components/MapPlaceholder.jsx` with a real Amap component.
+Without the key, a placeholder is shown instead.
 
 ## Future Goals
 - Potential pivot to WeChat Mini Program.

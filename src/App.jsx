@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import restaurants from './data/restaurants.json'
 import RestaurantCard from './components/RestaurantCard'
 import FilterBar from './components/FilterBar'
-import MapPlaceholder from './components/MapPlaceholder'
+import RestaurantMap from './components/MapPlaceholder'
 
 const defaultFilters = { city: '', diamonds: 0, maxCost: 0 }
 
@@ -35,7 +35,7 @@ export default function App() {
 
         {/* Map */}
         <div className="px-4 mb-4">
-          <MapPlaceholder restaurants={filtered} />
+          <RestaurantMap restaurants={filtered} />
         </div>
 
         {/* Restaurant list */}
