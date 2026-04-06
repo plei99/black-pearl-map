@@ -25,6 +25,7 @@ npm run import:black-pearl
 ```
 
 By default this writes to `src/data/black-pearl-official-restaurants.json` and leaves `src/data/restaurants.json` unchanged.
+The importer now fetches both the English and Chinese Black Pearl list endpoints and stores bilingual fields such as `name_en`, `name_zh`, `cuisine_en`, `cuisine_zh`, `city_en`, and `city_zh`.
 
 Optional flags:
 
@@ -66,6 +67,8 @@ node scripts/geocode-black-pearl.mjs --input=src/data/black-pearl-official-resta
 
 Because the official list API does not expose public coordinates, this script geocodes `restaurant name + city + country`. Some matches will need manual review, so the output also stores Google match metadata such as `matched_address`, `place_id`, and `location_type`.
 If [src/data/black-pearl-geocoding-overrides.json](/Users/patrick/Documents/black-pearl-map/src/data/black-pearl-geocoding-overrides.json) exists, manual overrides from that file are applied automatically after geocoding.
+
+The app includes an `EN` / `中文` toggle and reads the Chinese labels from the stored bilingual dataset, so if you refresh the import data and want those localized fields reflected in the map dataset too, rerun the geocoding step or merge the refreshed official data into the geocoded file.
 
 ## Retry Missing Coordinates
 
