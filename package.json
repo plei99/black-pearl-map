@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "import:black-pearl": "node scripts/import-black-pearl.mjs",
+    "geocode:black-pearl": "node scripts/geocode-black-pearl.mjs",
+    "retry-geocode:black-pearl": "node scripts/retry-black-pearl-geocoding.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",

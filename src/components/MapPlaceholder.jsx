@@ -5,10 +5,11 @@ const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
 function RestaurantMarkers({ restaurants }) {
   const [selected, setSelected] = useState(null)
+  const withLocation = restaurants.filter((r) => r.location)
 
   return (
     <>
-      {restaurants.map((r) => (
+      {withLocation.map((r) => (
         <AdvancedMarker
           key={r.id}
           position={{ lat: r.location.lat, lng: r.location.lng }}
@@ -55,8 +56,9 @@ export default function RestaurantMap({ restaurants }) {
     return <Placeholder restaurants={restaurants} />
   }
 
-  const center = restaurants.length > 0
-    ? { lat: restaurants[0].location.lat, lng: restaurants[0].location.lng }
+  const withLocation = restaurants.filter((r) => r.location)
+  const center = withLocation.length > 0
+    ? { lat: withLocation[0].location.lat, lng: withLocation[0].location.lng }
     : defaultCenter
 
   return (

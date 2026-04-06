@@ -1,4 +1,11 @@
-const cities = ['All', '上海', '北京']
+import restaurants from '../data/black-pearl-official-restaurants-geocoded.json'
+
+const cities = ['All', ...new Set(restaurants.map((r) => r.city))].sort((a, b) => {
+  if (a === 'All') return -1
+  if (b === 'All') return 1
+  return a.localeCompare(b, 'zh')
+})
+
 const diamondOptions = [0, 1, 2, 3]
 
 export default function FilterBar({ filters, onChange }) {

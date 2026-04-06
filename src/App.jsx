@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import restaurants from './data/restaurants.json'
+import restaurants from './data/black-pearl-official-restaurants-geocoded.json'
 import RestaurantCard from './components/RestaurantCard'
 import FilterBar from './components/FilterBar'
 import RestaurantMap from './components/MapPlaceholder'

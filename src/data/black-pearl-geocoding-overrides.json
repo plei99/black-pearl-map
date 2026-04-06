@@ -1,0 +1,22 @@
+[
+  {
+    "source_shop_id": "130934277",
+    "name": "Zhoushe Haipai Cuisine",
+    "location": {
+      "lat": 31.19512,
+      "lng": 121.31144
+    },
+    "geocoding": {
+      "query": "Shanghai Hongqiao Libao Plaza 3 Building, 1层109 Shenwu Rd, 109, Minhang District, Shanghai, China, 201106",
+      "status": "MANUAL_OVERRIDE",
+      "matched_address": "3 building, 1层, 109 Shen Wu Lu, Min Hang Qu, Shang Hai Shi, China, 201106",
+      "place_id": "EkszIGJ1aWxkaW5nLCAx5bGCLCAxMDkgU2hlbiBXdSBMdSwgTWluIEhhbmcgUXUsIFNoYW5nIEhhaSBTaGksIENoaW5hLCAyMDExMDYiLBoqChYKFAoSCX9WHPTgZrI1ESi2mdEH31aWEhAzIGJ1aWxkaW5nLCAx5bGC",
+      "result_types": [
+        "street_address",
+        "subpremise"
+      ],
+      "location_type": "ROOFTOP",
+      "override_reason": "Manual address provided after Google returned ZERO_RESULTS for the restaurant-name query."
+    }
+  }
+]
