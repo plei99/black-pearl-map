@@ -34,9 +34,9 @@ export default function App() {
   }, [filters])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-dvh bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 shrink-0">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
           <h1 className="text-xl font-bold text-gray-900">
             {labels.title}
@@ -65,20 +65,22 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto pb-8">
+      <main className="max-w-3xl mx-auto w-full flex-1 min-h-0 flex flex-col">
         <FilterBar filters={filters} onChange={setFilters} locale={locale} />
 
         {/* Map */}
-        <div className="px-4 mb-4">
+        <div className="px-4 mb-4 shrink-0">
           <RestaurantMap restaurants={filtered} locale={locale} />
         </div>
 
         {/* Restaurant list */}
-        <div className="px-4 flex flex-col gap-3">
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-8">
           {filtered.length === 0 ? (
             <p className="text-center text-gray-400 py-8">{labels.noResults}</p>
           ) : (
-            filtered.map((r) => <RestaurantCard key={r.id} restaurant={r} locale={locale} />)
+            <div className="flex flex-col gap-3">
+              {filtered.map((r) => <RestaurantCard key={r.id} restaurant={r} locale={locale} />)}
+            </div>
           )}
         </div>
       </main>
