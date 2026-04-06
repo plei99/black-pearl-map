@@ -34,6 +34,9 @@ export default function RestaurantCard({ restaurant, locale, theme }) {
       ? restaurant.cuisine_zh || labels.unknownCuisine
       : restaurant.cuisine || labels.unknownCuisine
   const city = locale === 'zh' ? restaurant.city_zh || restaurant.city : restaurant.city
+  const officialUrl =
+    (locale === 'zh' ? restaurant.official_url_zh : restaurant.official_url_en) ||
+    restaurant.official_url
 
   return (
     <div className={`rounded-xl border p-4 flex flex-col gap-2 ${
@@ -43,8 +46,21 @@ export default function RestaurantCard({ restaurant, locale, theme }) {
     }`}>
       <div className="flex items-start justify-between">
         <div>
-          <h3 className={`text-base font-semibold leading-snug ${theme === 'dark' ? 'text-slate-100' : 'text-gray-900'}`}>
-            {primaryName}
+          <h3 className="text-base font-semibold leading-snug">
+            {officialUrl ? (
+              <a
+                href={officialUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={`underline decoration-transparent underline-offset-2 transition-colors hover:decoration-current ${
+                  theme === 'dark' ? 'text-slate-100 hover:text-amber-300' : 'text-gray-900 hover:text-amber-700'
+                }`}
+              >
+                {primaryName}
+              </a>
+            ) : (
+              <span className={theme === 'dark' ? 'text-slate-100' : 'text-gray-900'}>{primaryName}</span>
+            )}
           </h3>
           {secondaryName ? (
             <p className={`text-sm mt-0.5 ${theme === 'dark' ? 'text-slate-400' : 'text-gray-500'}`}>
