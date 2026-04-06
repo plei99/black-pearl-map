@@ -29,7 +29,7 @@ function getPrimaryName(restaurant, locale) {
   return restaurant.name || restaurant.name_zh
 }
 
-function RestaurantMarkers({ restaurants, locale }) {
+function RestaurantMarkers({ restaurants, locale, theme }) {
   const [selected, setSelected] = useState(null)
   const labels = labelsByLocale[locale]
   const withLocation = restaurants.filter((r) => r.location)
@@ -48,9 +48,9 @@ function RestaurantMarkers({ restaurants, locale }) {
           position={{ lat: selected.location.lat, lng: selected.location.lng }}
           onCloseClick={() => setSelected(null)}
         >
-          <div className="text-sm">
+          <div className={`text-sm ${theme === 'dark' ? 'text-slate-100' : 'text-gray-900'}`}>
             <p className="font-semibold">{getPrimaryName(selected, locale)}</p>
-            <p className="text-gray-500">
+            <p className={theme === 'dark' ? 'text-slate-400' : 'text-gray-500'}>
               {(locale === 'zh' ? selected.cuisine_zh : selected.cuisine) || labels.unknownCuisine}
               {' · '}
               ¥{selected.cost_per_person}{labels.person}
@@ -97,18 +97,24 @@ function MapViewportController({ restaurants }) {
   return null
 }
 
-function Placeholder({ restaurants, locale }) {
+function Placeholder({ restaurants, locale, theme }) {
   const labels = labelsByLocale[locale]
 
   return (
-    <div className="bg-gray-100 rounded-xl border border-gray-200 flex items-center justify-center min-h-[300px] text-gray-400 text-sm">
+    <div className={`rounded-xl border flex items-center justify-center min-h-[300px] text-sm ${
+      theme === 'dark'
+        ? 'border-slate-800 bg-slate-900 text-slate-400'
+        : 'border-gray-200 bg-gray-100 text-gray-400'
+    }`}>
       <div className="text-center px-4">
         <p className="text-2xl mb-2">🗺️</p>
-        <p className="font-medium text-gray-500">{labels.mapTitle}</p>
+        <p className={`font-medium ${theme === 'dark' ? 'text-slate-300' : 'text-gray-500'}`}>{labels.mapTitle}</p>
         <p>{labels.readyToDisplay(restaurants.length)}</p>
-        <p className="mt-2 text-xs text-gray-400">
+        <p className={`mt-2 text-xs ${theme === 'dark' ? 'text-slate-500' : 'text-gray-400'}`}>
           {labels.enableMap}{' '}
-          <code className="bg-gray-200 px-1 rounded">VITE_GOOGLE_MAPS_API_KEY</code>{' '}
+          <code className={`px-1 rounded ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-200'}`}>
+            VITE_GOOGLE_MAPS_API_KEY
+          </code>{' '}
           {labels.enableMapSuffix}
         </p>
       </div>
@@ -118,9 +124,9 @@ function Placeholder({ restaurants, locale }) {
 
 const defaultCenter = { lat: 31.23, lng: 121.47 }
 
-export default function RestaurantMap({ restaurants, locale }) {
+export default function RestaurantMap({ restaurants, locale, theme }) {
   if (!API_KEY) {
-    return <Placeholder restaurants={restaurants} locale={locale} />
+    return <Placeholder restaurants={restaurants} locale={locale} theme={theme} />
   }
 
   const withLocation = restaurants.filter((r) => r.location)
@@ -129,11 +135,13 @@ export default function RestaurantMap({ restaurants, locale }) {
     : defaultCenter
 
   return (
-    <div className="rounded-xl overflow-hidden border border-gray-200 h-[350px]">
+    <div className={`rounded-xl overflow-hidden border h-[350px] ${
+      theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'
+    }`}>
       <APIProvider apiKey={API_KEY}>
         <Map defaultCenter={center} defaultZoom={12} mapId="ef6f1470cfa22b05e28e5c62">
           <MapViewportController restaurants={restaurants} />
-          <RestaurantMarkers restaurants={restaurants} locale={locale} />
+          <RestaurantMarkers restaurants={restaurants} locale={locale} theme={theme} />
         </Map>
       </APIProvider>
     </div>

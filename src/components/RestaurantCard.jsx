@@ -25,7 +25,7 @@ function getSecondaryName(restaurant, locale) {
   return secondary && secondary !== primary ? secondary : null
 }
 
-export default function RestaurantCard({ restaurant, locale }) {
+export default function RestaurantCard({ restaurant, locale, theme }) {
   const labels = labelsByLocale[locale]
   const primaryName = getPrimaryName(restaurant, locale)
   const secondaryName = getSecondaryName(restaurant, locale)
@@ -36,21 +36,31 @@ export default function RestaurantCard({ restaurant, locale }) {
   const city = locale === 'zh' ? restaurant.city_zh || restaurant.city : restaurant.city
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-2">
+    <div className={`rounded-xl border p-4 flex flex-col gap-2 ${
+      theme === 'dark'
+        ? 'border-slate-800 bg-slate-900 shadow-black/20'
+        : 'border-gray-100 bg-white shadow-sm'
+    }`}>
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-base font-semibold text-gray-900 leading-snug">{primaryName}</h3>
-          {secondaryName ? <p className="text-sm text-gray-500 mt-0.5">{secondaryName}</p> : null}
+          <h3 className={`text-base font-semibold leading-snug ${theme === 'dark' ? 'text-slate-100' : 'text-gray-900'}`}>
+            {primaryName}
+          </h3>
+          {secondaryName ? (
+            <p className={`text-sm mt-0.5 ${theme === 'dark' ? 'text-slate-400' : 'text-gray-500'}`}>
+              {secondaryName}
+            </p>
+          ) : null}
         </div>
         <span className="text-amber-500 tracking-wider shrink-0 ml-2" title={`${restaurant.diamonds} diamond`}>
           {diamondLabel(restaurant.diamonds)}
         </span>
       </div>
-      <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-        <span className="bg-gray-50 px-2 py-0.5 rounded">{cuisine}</span>
-        <span className="bg-gray-50 px-2 py-0.5 rounded">{city}</span>
+      <div className={`flex flex-wrap gap-2 text-sm ${theme === 'dark' ? 'text-slate-300' : 'text-gray-500'}`}>
+        <span className={`px-2 py-0.5 rounded ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-50'}`}>{cuisine}</span>
+        <span className={`px-2 py-0.5 rounded ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-50'}`}>{city}</span>
       </div>
-      <p className="text-sm text-gray-600">
+      <p className={`text-sm ${theme === 'dark' ? 'text-slate-300' : 'text-gray-600'}`}>
         ¥{restaurant.cost_per_person} {labels.person}
       </p>
     </div>
