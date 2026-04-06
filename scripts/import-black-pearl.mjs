@@ -83,6 +83,15 @@ function parsePrice(value) {
   return digits ? Number(digits) : null;
 }
 
+function normalizeText(value) {
+  const text = String(value ?? "").trim();
+  if (!text || text === "NULL" || text === "null") {
+    return null;
+  }
+
+  return text;
+}
+
 function parseCityAndCountry(shopCountryCityName, language) {
   const parts = String(shopCountryCityName ?? "").trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) {
@@ -116,19 +125,19 @@ function normalizeRestaurant(shop, language) {
 
   return {
     id: toId(shop.shopId),
-    name: shop.shopName,
-    cuisine: shop.cateName,
+    name: normalizeText(shop.shopName),
+    cuisine: normalizeText(shop.cateName),
     cost_per_person: parsePrice(shop.avgPriceDisplay),
     location: null,
     city,
     country,
     diamonds: shop.diamondLevel,
-    avg_price_display: shop.avgPriceDisplay ?? null,
-    image_url: shop.imageUrl ?? null,
+    avg_price_display: normalizeText(shop.avgPriceDisplay),
+    image_url: normalizeText(shop.imageUrl),
     official_url: `https://blackpearl.meituan.com/home/${language}/restaurant-detail?shopId=${shop.shopId}`,
     source_shop_id: String(shop.shopId),
     source_language: language,
-    source_location_label: shop.shopCountryCityName ?? null,
+    source_location_label: normalizeText(shop.shopCountryCityName),
   };
 }
 
@@ -136,13 +145,17 @@ function mergeRestaurantVariants(primaryRestaurant, variants) {
   const english = variants.en ?? null;
   const chinese = variants.zh ?? null;
   const fallback = primaryRestaurant ?? english ?? chinese;
+  const displayName = primaryRestaurant.name ?? english?.name ?? chinese?.name ?? null;
+  const displayCuisine = primaryRestaurant.cuisine ?? english?.cuisine ?? chinese?.cuisine ?? null;
+  const displayCity = primaryRestaurant.city ?? english?.city ?? chinese?.city ?? "";
+  const displayCountry = primaryRestaurant.country ?? english?.country ?? chinese?.country ?? "";
 
   return {
     id: fallback.id,
-    name: primaryRestaurant.name,
+    name: displayName,
     name_en: english?.name ?? null,
     name_zh: chinese?.name ?? null,
-    cuisine: primaryRestaurant.cuisine,
+    cuisine: displayCuisine,
     cuisine_en: english?.cuisine ?? null,
     cuisine_zh: chinese?.cuisine ?? null,
     cost_per_person:
@@ -151,10 +164,10 @@ function mergeRestaurantVariants(primaryRestaurant, variants) {
       chinese?.cost_per_person ??
       null,
     location: null,
-    city: primaryRestaurant.city,
+    city: displayCity,
     city_en: english?.city ?? null,
     city_zh: chinese?.city ?? null,
-    country: primaryRestaurant.country,
+    country: displayCountry,
     country_en: english?.country ?? null,
     country_zh: chinese?.country ?? null,
     diamonds: primaryRestaurant.diamonds ?? english?.diamonds ?? chinese?.diamonds ?? null,
