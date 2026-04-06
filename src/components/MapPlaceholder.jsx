@@ -1,5 +1,5 @@
-import { APIProvider, Map, AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
-import { useState } from 'react'
+import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps'
+import { useEffect, useState } from 'react'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
@@ -30,6 +30,40 @@ function RestaurantMarkers({ restaurants }) {
       )}
     </>
   )
+}
+
+function MapViewportController({ restaurants }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (!map) {
+      return
+    }
+
+    const withLocation = restaurants.filter((r) => r.location)
+
+    if (withLocation.length === 0) {
+      map.setCenter(defaultCenter)
+      map.setZoom(12)
+      return
+    }
+
+    if (withLocation.length === 1) {
+      map.setCenter(withLocation[0].location)
+      map.setZoom(14)
+      return
+    }
+
+    const bounds = new window.google.maps.LatLngBounds()
+
+    for (const restaurant of withLocation) {
+      bounds.extend(restaurant.location)
+    }
+
+    map.fitBounds(bounds, 64)
+  }, [map, restaurants])
+
+  return null
 }
 
 function Placeholder({ restaurants }) {
@@ -65,6 +99,7 @@ export default function RestaurantMap({ restaurants }) {
     <div className="rounded-xl overflow-hidden border border-gray-200 h-[350px]">
       <APIProvider apiKey={API_KEY}>
         <Map defaultCenter={center} defaultZoom={12} mapId="ef6f1470cfa22b05e28e5c62">
+          <MapViewportController restaurants={restaurants} />
           <RestaurantMarkers restaurants={restaurants} />
         </Map>
       </APIProvider>
