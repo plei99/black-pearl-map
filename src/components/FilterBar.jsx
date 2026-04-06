@@ -6,6 +6,14 @@ const cities = ['All', ...new Set(restaurants.map((r) => r.city))].sort((a, b) =
   return a.localeCompare(b, 'zh')
 })
 
+const cuisines = ['All', ...new Set(restaurants.map((r) => r.cuisine || '(Unknown)'))].sort((a, b) => {
+  if (a === 'All') return -1
+  if (b === 'All') return 1
+  if (a === '(Unknown)') return 1
+  if (b === '(Unknown)') return -1
+  return a.localeCompare(b, 'zh')
+})
+
 const diamondOptions = [0, 1, 2, 3]
 
 export default function FilterBar({ filters, onChange }) {
@@ -19,6 +27,19 @@ export default function FilterBar({ filters, onChange }) {
       >
         {cities.map((c) => (
           <option key={c} value={c === 'All' ? '' : c}>{c}</option>
+        ))}
+      </select>
+
+      {/* Cuisine filter */}
+      <select
+        value={filters.cuisine}
+        onChange={(e) => onChange({ ...filters, cuisine: e.target.value })}
+        className="rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white"
+      >
+        {cuisines.map((cuisine) => (
+          <option key={cuisine} value={cuisine === 'All' ? '' : cuisine}>
+            {cuisine === 'All' ? 'All Cuisines' : cuisine === '(Unknown)' ? 'Unknown Cuisine' : cuisine}
+          </option>
         ))}
       </select>
 

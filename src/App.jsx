@@ -4,7 +4,7 @@ import RestaurantCard from './components/RestaurantCard'
 import FilterBar from './components/FilterBar'
 import RestaurantMap from './components/MapPlaceholder'
 
-const defaultFilters = { city: '', diamonds: 0, maxCost: 0 }
+const defaultFilters = { city: '', cuisine: '', diamonds: 0, maxCost: 0 }
 
 export default function App() {
   const [filters, setFilters] = useState(defaultFilters)
@@ -12,6 +12,7 @@ export default function App() {
   const filtered = useMemo(() => {
     return restaurants.filter((r) => {
       if (filters.city && r.city !== filters.city) return false
+      if (filters.cuisine && (r.cuisine || '(Unknown)') !== filters.cuisine) return false
       if (filters.diamonds && r.diamonds !== filters.diamonds) return false
       if (filters.maxCost && r.cost_per_person > filters.maxCost) return false
       return true
