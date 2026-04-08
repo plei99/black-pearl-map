@@ -1,4 +1,4 @@
-import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps'
+import { Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps'
 import { useEffect, useState } from 'react'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -10,6 +10,7 @@ const labelsByLocale = {
     enableMapSuffix: 'in .env.local to enable',
     person: '/ person',
     unknownCuisine: 'Unknown Cuisine',
+    origin: 'Selected location',
   },
   zh: {
     mapTitle: 'Google 地图',
@@ -18,6 +19,7 @@ const labelsByLocale = {
     enableMapSuffix: '以启用地图',
     person: '/ 人',
     unknownCuisine: '未知菜系',
+    origin: '所选地点',
   },
 }
 
@@ -29,13 +31,24 @@ function getPrimaryName(restaurant, locale) {
   return restaurant.name || restaurant.name_zh
 }
 
-function RestaurantMarkers({ restaurants, locale, theme }) {
+function RestaurantMarkers({ restaurants, locale, theme, origin }) {
   const [selected, setSelected] = useState(null)
   const labels = labelsByLocale[locale]
   const withLocation = restaurants.filter((r) => r.location)
 
   return (
     <>
+      {origin?.location ? (
+        <AdvancedMarker position={origin.location} title={labels.origin}>
+          <div className={`rounded-full border-2 px-2 py-1 text-xs font-semibold ${
+            theme === 'dark'
+              ? 'border-amber-300 bg-amber-300 text-slate-900'
+              : 'border-amber-600 bg-amber-500 text-white'
+          }`}>
+            ●
+          </div>
+        </AdvancedMarker>
+      ) : null}
       {withLocation.map((r) => (
         <AdvancedMarker
           key={r.id}
@@ -63,7 +76,7 @@ function RestaurantMarkers({ restaurants, locale, theme }) {
   )
 }
 
-function MapViewportController({ restaurants }) {
+function MapViewportController({ restaurants, origin }) {
   const map = useMap()
 
   useEffect(() => {
@@ -73,13 +86,19 @@ function MapViewportController({ restaurants }) {
 
     const withLocation = restaurants.filter((r) => r.location)
 
-    if (withLocation.length === 0) {
+    if (withLocation.length === 0 && !origin?.location) {
       map.setCenter(defaultCenter)
       map.setZoom(12)
       return
     }
 
-    if (withLocation.length === 1) {
+    if (withLocation.length === 0 && origin?.location) {
+      map.setCenter(origin.location)
+      map.setZoom(14)
+      return
+    }
+
+    if (withLocation.length === 1 && !origin?.location) {
       map.setCenter(withLocation[0].location)
       map.setZoom(14)
       return
@@ -87,12 +106,16 @@ function MapViewportController({ restaurants }) {
 
     const bounds = new window.google.maps.LatLngBounds()
 
+    if (origin?.location) {
+      bounds.extend(origin.location)
+    }
+
     for (const restaurant of withLocation) {
       bounds.extend(restaurant.location)
     }
 
     map.fitBounds(bounds, 64)
-  }, [map, restaurants])
+  }, [map, restaurants, origin])
 
   return null
 }
@@ -124,7 +147,7 @@ function Placeholder({ restaurants, locale, theme }) {
 
 const defaultCenter = { lat: 31.23, lng: 121.47 }
 
-export default function RestaurantMap({ restaurants, locale, theme }) {
+export default function RestaurantMap({ restaurants, locale, theme, origin }) {
   if (!API_KEY) {
     return <Placeholder restaurants={restaurants} locale={locale} theme={theme} />
   }
@@ -138,12 +161,10 @@ export default function RestaurantMap({ restaurants, locale, theme }) {
     <div className={`rounded-xl overflow-hidden border h-[350px] ${
       theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'
     }`}>
-      <APIProvider apiKey={API_KEY}>
-        <Map defaultCenter={center} defaultZoom={12} mapId="ef6f1470cfa22b05e28e5c62">
-          <MapViewportController restaurants={restaurants} />
-          <RestaurantMarkers restaurants={restaurants} locale={locale} theme={theme} />
-        </Map>
-      </APIProvider>
+      <Map defaultCenter={center} defaultZoom={12} mapId="ef6f1470cfa22b05e28e5c62">
+        <MapViewportController restaurants={restaurants} origin={origin} />
+        <RestaurantMarkers restaurants={restaurants} locale={locale} theme={theme} origin={origin} />
+      </Map>
     </div>
   )
 }

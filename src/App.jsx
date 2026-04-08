@@ -1,9 +1,11 @@
+import { APIProvider } from '@vis.gl/react-google-maps'
 import { useEffect, useMemo, useState } from 'react'
 import restaurants from './data/black-pearl-official-restaurants-geocoded.json'
 import RestaurantCard from './components/RestaurantCard'
 import FilterBar from './components/FilterBar'
 import RestaurantMap from './components/MapPlaceholder'
 
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const defaultFilters = { city: '', cuisine: '', diamonds: 0, maxCost: 0 }
 const getSystemTheme = () => {
   if (typeof window === 'undefined') {
@@ -30,10 +32,27 @@ const localeLabels = {
   },
 }
 
+const toRadians = (degrees) => (degrees * Math.PI) / 180
+
+const getDistanceMeters = (from, to) => {
+  const earthRadiusMeters = 6371000
+  const latDelta = toRadians(to.lat - from.lat)
+  const lngDelta = toRadians(to.lng - from.lng)
+  const fromLat = toRadians(from.lat)
+  const toLat = toRadians(to.lat)
+
+  const a = Math.sin(latDelta / 2) ** 2 +
+    Math.cos(fromLat) * Math.cos(toLat) * Math.sin(lngDelta / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return earthRadiusMeters * c
+}
+
 export default function App() {
   const [filters, setFilters] = useState(defaultFilters)
   const [locale, setLocale] = useState('zh')
   const [theme, setTheme] = useState(getSystemTheme)
+  const [origin, setOrigin] = useState(null)
   const labels = localeLabels[locale]
 
   useEffect(() => {
@@ -41,16 +60,31 @@ export default function App() {
   }, [theme])
 
   const filtered = useMemo(() => {
-    return restaurants.filter((r) => {
+    const filteredRestaurants = restaurants.filter((r) => {
       if (filters.city && r.city !== filters.city) return false
       if (filters.cuisine && (r.cuisine || '(Unknown)') !== filters.cuisine) return false
       if (filters.diamonds && r.diamonds !== filters.diamonds) return false
       if (filters.maxCost && r.cost_per_person > filters.maxCost) return false
       return true
     })
-  }, [filters])
 
-  return (
+    if (!origin?.location) {
+      return filteredRestaurants
+    }
+
+    return [...filteredRestaurants]
+      .map((restaurant) => ({
+        ...restaurant,
+        distance_meters: restaurant.location ? getDistanceMeters(origin.location, restaurant.location) : null,
+      }))
+      .sort((a, b) => {
+        if (a.distance_meters == null) return 1
+        if (b.distance_meters == null) return -1
+        return a.distance_meters - b.distance_meters
+      })
+  }, [filters, origin])
+
+  const content = (
     <div className={`h-dvh flex flex-col overflow-hidden ${
       theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'
     }`}>
@@ -137,11 +171,19 @@ export default function App() {
       </header>
 
       <main className="max-w-3xl mx-auto w-full flex-1 min-h-0 flex flex-col">
-        <FilterBar filters={filters} onChange={setFilters} locale={locale} theme={theme} />
+        <FilterBar
+          filters={filters}
+          onChange={setFilters}
+          locale={locale}
+          theme={theme}
+          origin={origin}
+          onOriginChange={setOrigin}
+          mapsEnabled={Boolean(API_KEY)}
+        />
 
         {/* Map */}
         <div className="px-4 mb-4 shrink-0">
-          <RestaurantMap restaurants={filtered} locale={locale} theme={theme} />
+          <RestaurantMap restaurants={filtered} locale={locale} theme={theme} origin={origin} />
         </div>
 
         {/* Restaurant list */}
@@ -161,4 +203,6 @@ export default function App() {
       </main>
     </div>
   )
+
+  return API_KEY ? <APIProvider apiKey={API_KEY}>{content}</APIProvider> : content
 }
